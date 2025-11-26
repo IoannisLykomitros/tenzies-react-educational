@@ -5,7 +5,7 @@ import { useWindowSize } from 'react-use'
 import ReactConfetti from "react-confetti"
 
 const App = () => {
-    const [dice, setDice] = useState(generateAllNewDice())
+    const [dice, setDice] = useState(() => generateAllNewDice())
 
     let gameWon = dice.every(die => die.isHeld) && dice.every(die => die.value === dice[0].value)
 
@@ -20,11 +20,15 @@ const App = () => {
     }
 
     const rollDice = () => {
-        setDice(oldDice => oldDice.map(die => 
-            die.isHeld ?
-                die :
-                { ...die, value: Math.ceil(Math.random() * 6) }
-        ))
+        if (!gameWon) {
+            setDice(oldDice => oldDice.map(die =>
+                die.isHeld ?
+                    die :
+                    { ...die, value: Math.ceil(Math.random() * 6) }
+            ))
+        } else {
+            setDice(generateAllNewDice())
+        }
     }
 
     const hold = (id) => {
